@@ -143,6 +143,7 @@ function listFiles() {
 const addToDB = () => {
   database.find({}, function (err, docs) {
     for (let i = 0; i < docs.length; i++) {
+      // console.log(docs[i].file_id);
       let temp = generatePublicURL(docs[i].file_id);
       generatePublicURL(docs[i].file_id);
       arrLinks.push(temp);
@@ -161,10 +162,11 @@ const addToDB = () => {
 // createFolder();
 // listFiles();
 // let test = addToDB();
+// addToDB();
 /*------------------------------
 Initialize
 ------------------------------*/
-server.listen(3000);
+server.listen(3001);
 io.on("connection", (socket) => {
   linkDB.find({}, function (err, docs) {
     io.to(socket.id).emit("hereYouGo", docs);

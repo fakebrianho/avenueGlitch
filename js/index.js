@@ -9,6 +9,40 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { AfterimagePass } from "three/examples/jsm/postprocessing/AfterimagePass.js";
 
 /*------------------------------
+HTML
+------------------------------*/
+// window.setTimeout(finishedLoading, 5000);
+// function finishedLoading() {
+//   const loader = document.querySelector("#loader-wrapper");
+//   console.log(loader);
+//   fadeOut(loader);
+//   function fadeOut(el) {
+//     el.style.opacity = 1;
+//     (function fade() {
+//       if ((el.style.opacity -= 0.1) < 0) {
+//         el.style.display = "none";
+//       } else {
+//         requestAnimationFrame(fade);
+//       }
+//     })();
+//   }
+// }
+const voAudio = document.getElementById("vo");
+const musicAudio = document.getElementById("music");
+const playBtn = document.querySelector("#play-btn");
+const ctx = document.getElementById("webglcanvas");
+playBtn.addEventListener("click", () => {
+  document.body.classList.add("start-anim");
+  voAudio.play();
+  musicAudio.play();
+  window.setTimeout(animate, 5000);
+});
+voAudio.onended = () => {
+  window.addEventListener("pointerdown", canvasClicker);
+  ctx.style.pointerEvents = "auto";
+  // document.canvas.style.pointerEvents = "auto";
+};
+/*------------------------------
 Global Setup
 ------------------------------*/
 let afterImagePass;
@@ -30,7 +64,24 @@ var sectionWidth = 1;
 /*------------------------------
 Start Animations
 ------------------------------*/
-
+const textureLoader = new THREE.TextureLoader();
+const heightTexture = textureLoader.load("/assets/Ice_001_DISP.png");
+const colorTexture = textureLoader.load(
+  "/assets/Ice_001_COLOR.jpg"
+  // "/assets/Stylized_Leaves_002_basecolor.jpg"
+);
+const normalTexture = textureLoader.load(
+  "/assets/Ice_001_NRM.jpg"
+  // "/assets/Stylized_Leaves_002_normal.jpg"
+);
+const roughnessTexture = textureLoader.load(
+  "/assets/Ice_001_SPEC.jpg"
+  // "/assets/Stylized_Leaves_002_roughness.jpg"
+);
+const ambientOcclusionTexture = textureLoader.load(
+  "/assets/Ice_001_OCC.jpg"
+  // "/assets/Stylized_Leaves_002_ambientOcculsion.jpg"
+);
 /*------------------------------
 3D Objects
 ------------------------------*/
@@ -68,31 +119,19 @@ new MTLLoader(manager).load("assets/Prunus_Pendula.mtl", function (materials) {
 /*------------------------------
 Shaders
 ------------------------------*/
-// var testGeo = new THREE.PlaneBufferGeometry(2, 2);
+let grass = new THREE.PlaneBufferGeometry(200, 200);
+// let grassMaterial = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide });
+let grassMaterial = new THREE.MeshBasicMaterial();
+const ground = new THREE.Mesh(grass, grassMaterial);
+// grassMaterial.map = colorTexture;
+// grassMaterial.displacementMap = heightTexture;
+// grassMaterial.normalMap = normalTexture;
+// grassMaterial.roughnessMap = roughnessTexture;
+// grassMaterial.aoMap = ambientOcclusionTexture;
+scene.add(ground);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -80;
 
-// let uniforms = {
-//   u_time: { type: "f", value: 1.0 },
-//   u_resolution: {
-//     type: "v2",
-//     value: new THREE.Vector2(),
-//   },
-//   u_mouse: { type: "v2", value: new THREE.Vector2() },
-// };
-
-// var testMaterial = new THREE.ShaderMaterial({
-//   uniforms: uniforms,
-//   vertexShader: document.getElementById("vertexShader").textContent,
-//   fragmentShader: document.getElementById("fragmentShader").textContent,
-// });
-
-// let mmesh = new THREE.Mesh(testGeo, testMaterial);
-// scene.add(mmesh);
-// document.onmousemove = function (e) {
-//   uniforms.u_mouse.value.x = e.pageX;
-//   uniforms.u_mouse.value.y = e.pageY;
-//   uniforms.u_resolution.value.x = renderer.domElement.width;
-//   uniforms.u_resolution.value.y = renderer.domElement.height;
-// };
 /*------------------------------
 Sockets
 ------------------------------*/
@@ -174,7 +213,9 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /*------------------------------
 Raycast
 ------------------------------*/
-window.addEventListener("pointerdown", (event) => {
+
+function canvasClicker(event) {
+  console.log("whye");
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
@@ -189,7 +230,7 @@ window.addEventListener("pointerdown", (event) => {
     }
     animate();
   }
-});
+}
 /*------------------------------
 Post Production 
 ------------------------------*/
@@ -247,6 +288,10 @@ const controls = new OrbitControls(camera, canvas);
 // const controls = new DeviceOrientationControls(camera, true);
 controls.enableDamping = true;
 
+const cineCamera = () => {
+  console.log(camera.position.z);
+  camera.position.z -= 0.0001;
+};
 const clock = new THREE.Clock();
 const animate = () => {
   /*------------------------------
@@ -263,10 +308,11 @@ const animate = () => {
   Update Meshes
   ------------------------------*/
   p.rotation.y = elapsedTime * 0.06;
-  // mesh.rotation.x = elapsedTime;
-  // mesh.rotation.y = elapsedTime;
-  // mesh.rotation.y = device.angleY();
 
+  if (camera.position.z > 100) {
+    console.log(camera.position.z);
+    camera.position.z -= elapsedTime * 0.0059;
+  }
   /*------------------------------
   Render
   ------------------------------*/
@@ -279,4 +325,5 @@ const animate = () => {
   window.requestAnimationFrame(animate);
 };
 
-animate();
+// animate();
+// cineCamera();

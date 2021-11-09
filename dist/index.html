@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="/style.e308ff8e.css">
 <script src="/base.ee376513.js"></script><script src="/style.e308ff8e.js"></script></head>
 <body>
+
+<!-- <div id="loader-wrapper">
+  <span id="loader"><span class="loader-inner"></span></span>
+</div> -->
   <audio id="vo">
     <source src="/vo2.638ebf38.mp3" type="audio/mpeg">
   </audio>
@@ -24,24 +28,14 @@
       <span class="intro__content-line intro__content-line--small">Click and drag to move the camera, click on different elements to interact with them.</span>
     </p>
   </div>
+  
   <div class="screen screen--flex action">
     <span class="action__line">Headphones Recommended</span>
     <button id="play-btn" class="button button--box">Play</button>
   </div>
-  <canvas class="webgl"></canvas>  
-
-  <script>var voAudio = document.getElementById('vo');
-var musicAudio = document.getElementById('music');
-playBtn = document.querySelector("#play-btn");
-playBtn.addEventListener("click", function () {
-  document.body.classList.add("start-anim");
-  voAudio.play();
-  musicAudio.play();
-});
-
-musicAudio.onended = function () {
-  document.body.style.pointerEvents = 'auto';
-};</script>
+  <div id="canvasWrapper">
+  <canvas id="webglcanvas" class="webgl"></canvas>  
+</div>
 </body>
 
 <script src="/js.00a46daa.js"></script>

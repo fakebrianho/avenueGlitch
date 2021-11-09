@@ -10,7 +10,6 @@
 }
 
 body {
-  pointer-events: none;
 	margin: 0;
 	--color-text: #fff;
 	--color-bg: #000;
@@ -29,6 +28,7 @@ body {
 }
 
 canvas {
+  pointer-events: none;
 	position: absolute;
 	left: 50%;
 	top: 50%;
@@ -223,6 +223,26 @@ canvas {
 		font-size: 8.75vw;
 	}
 }
-
+/* .canvas-wrapper {position:relative} */
+#loader-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #242f3f;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+	z-index: 999;
+}
+#loader {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  border: 4px solid #Fff;
+  animation: loader 2s infinite ease;
+}
 
 /*# sourceMappingURL=/style.e308ff8e.css.map */
